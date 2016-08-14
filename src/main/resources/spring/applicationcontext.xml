@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/mvc"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"	
+	xmlns:cache="http://www.springframework.org/schema/cache"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd
+		http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache-3.2.xsd
+		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd
+		">
+
+	<context:component-scan base-package="de.ishitasharma.wc.controller, de.ishitasharma.wc.service" />	
+
+	<!-- Enables the Spring MVC @Controller programming model -->
+	<annotation-driven />
+	
+	<beans:bean id="basicDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+        <beans:property name="driverClassName" value="org.postgresql.Driver"/>
+        <beans:property name="url" value="jdbc:postgresql://localhost:5432/wc"/>
+        <beans:property name="username" value="postgres"/>
+        <beans:property name="password" value="password"/>
+        <beans:property name="removeAbandoned" value="true"/>
+        <beans:property name="initialSize" value="10" />
+        <beans:property name="maxActive" value="50" />
+    </beans:bean>
+    
+</beans:beans>

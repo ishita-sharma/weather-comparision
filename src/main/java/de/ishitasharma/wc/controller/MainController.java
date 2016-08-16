@@ -1,7 +1,5 @@
 package de.ishitasharma.wc.controller;
 
-import java.io.IOException;
-
 import javax.inject.Inject;
 
 import org.springframework.http.HttpStatus;
@@ -23,7 +21,6 @@ public class MainController {
 
 	private ObjectMapper objectMapper = new ObjectMapper();
 
-
 	@Inject
 	private ExternalWeatherDataService externalWeatherDataService;
 
@@ -33,10 +30,9 @@ public class MainController {
 			@RequestParam(value = "secondCity", required = true) String secondCity)
 			throws JsonProcessingException {
 		
-		externalWeatherDataService.fetchData(firstCity, secondCity);
+		String response = externalWeatherDataService.fetchData(firstCity, secondCity);
 		
-		Message message = new Message(responseForFirstCity,
-				responseForSecondCity);
+		Message message = new Message(response);
 		return new ResponseEntity<String>(
 				objectMapper.writeValueAsString(message), HttpStatus.OK);
 	}

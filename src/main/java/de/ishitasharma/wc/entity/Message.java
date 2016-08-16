@@ -5,31 +5,18 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class Message {
 	
 	@JsonProperty
-	private String responseForFirstCity;
-	
-	@JsonProperty
-	private String responseForSecondCity;
+	private String text;
 
-	public Message(String responseForFirstCity, String responseForSecondCity) {
+	public Message(String text) {
 		super();
-		this.responseForFirstCity = responseForFirstCity;
-		this.responseForSecondCity = responseForSecondCity;
+		this.text = text;
 	}
 
-	public String getResponseForFirstCity() {
-		return responseForFirstCity;
+	public String getText() {
+		return text;
 	}
 
-	public void setResponseForFirstCity(String responseForFirstCity) {
-		this.responseForFirstCity = responseForFirstCity;
+	public void setText(String text) {
+		this.text = text;
 	}
-
-	public String getResponseForSecondCity() {
-		return responseForSecondCity;
-	}
-
-	public void setResponseForSecondCity(String responseForSecondCity) {
-		this.responseForSecondCity = responseForSecondCity;
-	}
-
 }

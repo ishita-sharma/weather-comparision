@@ -1,0 +1,26 @@
+package de.ishitasharma.wc.util;
+
+import java.io.IOException;
+
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+
+public class JsonHelperUtil<T> {
+
+	private ObjectMapper mapper = new ObjectMapper();
+	
+	public JsonHelperUtil() {
+		super();
+	}
+
+	public T serializeJsonToObject (String jsonString, TypeReference<T> valueTypeRef) throws JsonParseException, JsonMappingException, IOException {
+		return mapper.readValue(jsonString, valueTypeRef);
+	}
+	
+	public T serializeJsonToObject (String jsonString, Class<T> valueType) throws JsonParseException, JsonMappingException, IOException {
+		return mapper.readValue(jsonString, valueType);
+	}
+}

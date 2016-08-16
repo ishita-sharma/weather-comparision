@@ -1,36 +1,35 @@
 package de.ishitasharma.wc.entity;
 
-import org.springframework.http.HttpStatus;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Message {
 	
 	@JsonProperty
-	private String text;
+	private String responseForFirstCity;
 	
 	@JsonProperty
-	private HttpStatus status;
+	private String responseForSecondCity;
 
-	public Message(String text, HttpStatus status) {
+	public Message(String responseForFirstCity, String responseForSecondCity) {
 		super();
-		this.text = text;
-		this.status = status;
+		this.responseForFirstCity = responseForFirstCity;
+		this.responseForSecondCity = responseForSecondCity;
 	}
 
-	public String getText() {
-		return text;
+	public String getResponseForFirstCity() {
+		return responseForFirstCity;
 	}
 
-	public void setText(String text) {
-		this.text = text;
+	public void setResponseForFirstCity(String responseForFirstCity) {
+		this.responseForFirstCity = responseForFirstCity;
 	}
 
-	public HttpStatus getStatus() {
-		return status;
+	public String getResponseForSecondCity() {
+		return responseForSecondCity;
 	}
 
-	public void setStatus(HttpStatus status) {
-		this.status = status;
+	public void setResponseForSecondCity(String responseForSecondCity) {
+		this.responseForSecondCity = responseForSecondCity;
 	}
+
 }

@@ -11,7 +11,11 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.springframework.stereotype.Component;
 
-import de.ishitasharma.wc.entity.ExternalWeatherDataDump;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonMappingException;
+
+import de.ishitasharma.wc.api.entity.ExternalWeatherDataDump;
 import de.ishitasharma.wc.util.JsonHelperUtil;
 
 @Component
@@ -23,10 +27,11 @@ public class ExternalWeatherDataService {
 
 	private String responseForFirstCity;
 	private String responseForSecondCity;
-	private ExternalWeatherDataDump externalWeatherDataDump;
+	private ExternalWeatherDataDump externalWeatherDataDump1;
+	private ExternalWeatherDataDump externalWeatherDataDump2;
 	private JsonHelperUtil<ExternalWeatherDataDump> jsonHelper = new JsonHelperUtil<ExternalWeatherDataDump>();
 
-	public String fetchData(String firstCity, String secondCity) {
+	public ExternalWeatherDataDump fetchData(String firstCity, String secondCity) throws JsonParseException, JsonMappingException, IOException {
 		String request_Url_1 = buildUrl(firstCity);
 		String request_Url_2 = buildUrl(secondCity);
 
@@ -37,13 +42,14 @@ public class ExternalWeatherDataService {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		try {
-			externalWeatherDataDump = jsonHelper.serializeJsonToObject(responseForFirstCity, ExternalWeatherDataDump.class);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return externalWeatherDataDump.getName();
+
+		externalWeatherDataDump1 = jsonHelper.deSerializeJsonToObject(
+				responseForFirstCity, ExternalWeatherDataDump.class);
+		
+		externalWeatherDataDump2 = jsonHelper.deSerializeJsonToObject(
+				responseForSecondCity, ExternalWeatherDataDump.class);
+
+		return externalWeatherDataDump1;
 	}
 
 	public String getWeatherDataFromApi(String request_url)

@@ -16,11 +16,11 @@ public class JsonHelperUtil<T> {
 		super();
 	}
 
-	public T serializeJsonToObject (String jsonString, TypeReference<T> valueTypeRef) throws JsonParseException, JsonMappingException, IOException {
+	public T deSerializeJsonToObject (String jsonString, TypeReference<T> valueTypeRef) throws JsonParseException, JsonMappingException, IOException {
 		return mapper.readValue(jsonString, valueTypeRef);
 	}
 	
-	public T serializeJsonToObject (String jsonString, Class<T> valueType) throws JsonParseException, JsonMappingException, IOException {
+	public T deSerializeJsonToObject (String jsonString, Class<T> valueType) throws JsonParseException, JsonMappingException, IOException {
 		return mapper.readValue(jsonString, valueType);
 	}
 }

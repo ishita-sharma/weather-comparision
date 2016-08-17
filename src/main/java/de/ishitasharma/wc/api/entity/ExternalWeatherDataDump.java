@@ -1,4 +1,6 @@
-package de.ishitasharma.wc.entity;
+package de.ishitasharma.wc.api.entity;
+
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -9,7 +11,7 @@ public class ExternalWeatherDataDump {
 	private CityCoordinates cityCoordinates;
 	
 	@JsonProperty("weather")
-	private WeatherInfo weatherInfoList;
+	private List<WeatherInfo> weatherInfoList;
 	
 	@JsonProperty("base")
 	private String base;
@@ -50,11 +52,11 @@ public class ExternalWeatherDataDump {
 		this.cityCoordinates = cityCoordinates;
 	}
 
-	public WeatherInfo getWeatherInfoList() {
+	public List<WeatherInfo> getWeatherInfoList() {
 		return weatherInfoList;
 	}
 
-	public void setWeatherInfoList(WeatherInfo weatherInfoList) {
+	public void setWeatherInfoList(List<WeatherInfo> weatherInfoList) {
 		this.weatherInfoList = weatherInfoList;
 	}
 

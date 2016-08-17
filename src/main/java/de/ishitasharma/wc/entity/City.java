@@ -2,6 +2,8 @@ package de.ishitasharma.wc.entity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import de.ishitasharma.wc.api.entity.CityCoordinates;
+
 public class City {
 	
 	@JsonProperty("_id")

@@ -37,7 +37,7 @@ public class Bootstrap implements InitializingBean {
 	public void afterPropertiesSet() throws Exception {
 		cityDataDump = loadCityData();
 		formattedCityData = formatCityData(cityDataDump);
-		List<City> listOfCities = (List<City>) jsonHelper.serializeJsonToObject(
+		List<City> listOfCities = (List<City>) jsonHelper.deSerializeJsonToObject(
 				formattedCityData, new TypeReference<List<City>>() {
 				});
 		storeCityDataInDB(listOfCities);

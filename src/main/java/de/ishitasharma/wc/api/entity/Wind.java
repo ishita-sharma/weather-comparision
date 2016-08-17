@@ -1,4 +1,4 @@
-package de.ishitasharma.wc.entity;
+package de.ishitasharma.wc.api.entity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -9,6 +9,9 @@ public class Wind {
 	
 	@JsonProperty("deg")
 	private double deg;
+	
+	@JsonProperty("gust")
+	private int gust;
 
 	public Wind() {
 		super();
@@ -28,5 +31,13 @@ public class Wind {
 
 	public void setDeg(double deg) {
 		this.deg = deg;
+	}
+
+	public int getGust() {
+		return gust;
+	}
+
+	public void setGust(int gust) {
+		this.gust = gust;
 	}
 }

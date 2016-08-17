@@ -1,4 +1,4 @@
-package de.ishitasharma.wc.entity;
+package de.ishitasharma.wc.api.entity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

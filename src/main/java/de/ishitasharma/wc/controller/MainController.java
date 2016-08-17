@@ -1,5 +1,7 @@
 package de.ishitasharma.wc.controller;
 
+import java.io.IOException;
+
 import javax.inject.Inject;
 
 import org.springframework.http.HttpStatus;
@@ -12,7 +14,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import de.ishitasharma.wc.entity.Message;
+import de.ishitasharma.wc.api.entity.ExternalWeatherDataDump;
+import de.ishitasharma.wc.api.entity.Message;
 import de.ishitasharma.wc.service.ExternalWeatherDataService;
 
 @Controller
@@ -28,9 +31,9 @@ public class MainController {
 	public ResponseEntity<String> fetchData(
 			@RequestParam(value = "firstCity", required = true) String firstCity,
 			@RequestParam(value = "secondCity", required = true) String secondCity)
-			throws JsonProcessingException {
+			throws IOException {
 		
-		String response = externalWeatherDataService.fetchData(firstCity, secondCity);
+		ExternalWeatherDataDump response = externalWeatherDataService.fetchData(firstCity, secondCity);
 		
 		Message message = new Message(response);
 		return new ResponseEntity<String>(

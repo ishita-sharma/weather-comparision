@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 import de.ishitasharma.wc.entity.City;
-import de.ishitasharma.wc.util.JsonHelperUtil;
+import de.ishitasharma.wc.helper.JsonHelperUtil;
 
 @Component
 public class Bootstrap implements InitializingBean {

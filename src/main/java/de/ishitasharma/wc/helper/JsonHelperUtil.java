@@ -1,4 +1,4 @@
-package de.ishitasharma.wc.util;
+package de.ishitasharma.wc.helper;
 
 import java.io.IOException;
 

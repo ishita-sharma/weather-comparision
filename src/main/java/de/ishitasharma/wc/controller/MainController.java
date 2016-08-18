@@ -16,7 +16,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import de.ishitasharma.wc.api.entity.ExternalWeatherDataDump;
 import de.ishitasharma.wc.api.entity.Message;
-import de.ishitasharma.wc.service.ExternalWeatherDataService;
+import de.ishitasharma.wc.service.IExternalWeatherDataService;
 
 @Controller
 @RequestMapping(value = "/")
@@ -25,7 +25,7 @@ public class MainController {
 	private ObjectMapper objectMapper = new ObjectMapper();
 
 	@Inject
-	private ExternalWeatherDataService externalWeatherDataService;
+	private IExternalWeatherDataService externalWeatherDataService;
 
 	@RequestMapping(value = "/fetch", method = { RequestMethod.GET }, produces = { "application/json;charset=UTF-8" })
 	public ResponseEntity<String> fetchData(
@@ -33,7 +33,7 @@ public class MainController {
 			@RequestParam(value = "secondCity", required = true) String secondCity)
 			throws IOException {
 		
-		ExternalWeatherDataDump response = externalWeatherDataService.fetchData(firstCity, secondCity);
+		String response = externalWeatherDataService.fetchData(firstCity, secondCity);
 		
 		Message message = new Message(response);
 		return new ResponseEntity<String>(

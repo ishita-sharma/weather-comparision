@@ -5,18 +5,18 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class Message {
 	
 	@JsonProperty
-	private ExternalWeatherDataDump text;
+	private String text;
 
-	public Message(ExternalWeatherDataDump response) {
+	public Message(String response) {
 		super();
 		this.text = response;
 	}
 
-	public ExternalWeatherDataDump getText() {
+	public String getText() {
 		return text;
 	}
 
-	public void setText(ExternalWeatherDataDump text) {
+	public void setText(String text) {
 		this.text = text;
 	}
 }

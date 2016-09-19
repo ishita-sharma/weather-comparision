@@ -13,7 +13,7 @@
 		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd
 		">
 
-	<context:component-scan base-package="de.ishitasharma.wc.controller, de.ishitasharma.wc.service" />	
+	<context:component-scan base-package="de.ishitasharma.wc.controller, de.ishitasharma.wc.service, de.ishitasharma.wc.helper" />	
 
 	<!-- Enables the Spring MVC @Controller programming model -->
 	<annotation-driven />

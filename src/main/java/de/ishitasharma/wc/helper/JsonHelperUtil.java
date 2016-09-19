@@ -7,20 +7,22 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-
 public class JsonHelperUtil<T> {
 
 	private ObjectMapper mapper = new ObjectMapper();
-	
+
 	public JsonHelperUtil() {
 		super();
 	}
 
-	public T deSerializeJsonToObject (String jsonString, TypeReference<T> valueTypeRef) throws JsonParseException, JsonMappingException, IOException {
+	public T deSerializeJsonToObject(String jsonString,
+			TypeReference<T> valueTypeRef) throws JsonParseException,
+			JsonMappingException, IOException {
 		return mapper.readValue(jsonString, valueTypeRef);
 	}
-	
-	public T deSerializeJsonToObject (String jsonString, Class<T> valueType) throws JsonParseException, JsonMappingException, IOException {
+
+	public T deSerializeJsonToObject(String jsonString, Class<T> valueType)
+			throws JsonParseException, JsonMappingException, IOException {
 		return mapper.readValue(jsonString, valueType);
 	}
 }

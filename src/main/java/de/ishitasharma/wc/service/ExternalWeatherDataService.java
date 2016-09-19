@@ -1,6 +1,13 @@
 package de.ishitasharma.wc.service;
 
 import java.io.IOException;
+import java.sql.Time;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.inject.Inject;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -10,6 +17,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -19,42 +27,59 @@ import de.ishitasharma.wc.api.entity.ExternalWeatherDataDump;
 import de.ishitasharma.wc.helper.JsonHelperUtil;
 import de.ishitasharma.wc.helper.WeatherResponseHelper;
 
-@Component
-public class ExternalWeatherDataService implements IExternalWeatherDataService{
+@Service
+public class ExternalWeatherDataService implements IExternalWeatherDataService {
 
-	
+	private static final long CACHE_EXPIRY = 9000000;
 
-	private String responseForFirstCity;
-	private String responseForSecondCity;
-	private ExternalWeatherDataDump externalWeatherDataDump1;
-	private ExternalWeatherDataDump externalWeatherDataDump2;
 	private JsonHelperUtil<ExternalWeatherDataDump> jsonHelper = new JsonHelperUtil<ExternalWeatherDataDump>();
-	private WeatherResponseHelper weatherResponseHelper = new WeatherResponseHelper();
+
+	@Inject
+	private WeatherResponseHelper weatherResponseHelper;
+
+	private Map<String, ExternalWeatherDataDump> cachedWeatherData = new HashMap<String, ExternalWeatherDataDump>();
 
 	@Override
-	public String fetchData(String firstCity, String secondCity) throws JsonParseException, JsonMappingException, IOException {
-		String request_Url_1 = weatherResponseHelper.buildUrl(firstCity);
-		String request_Url_2 = weatherResponseHelper.buildUrl(secondCity);
+	public String compare(String firstCity, String secondCity)
+			throws JsonParseException, JsonMappingException,
+			ClientProtocolException, IOException {
 
-		try {
-			responseForFirstCity = weatherResponseHelper.getWeatherDataFromApi(request_Url_1);
-			responseForSecondCity = weatherResponseHelper.getWeatherDataFromApi(request_Url_2);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		ExternalWeatherDataDump externalWeatherDataDump1 = getWeatherDataFromApi(firstCity);
 
-		externalWeatherDataDump1 = jsonHelper.deSerializeJsonToObject(
-				responseForFirstCity, ExternalWeatherDataDump.class);
-		
-		externalWeatherDataDump2 = jsonHelper.deSerializeJsonToObject(
-				responseForSecondCity, ExternalWeatherDataDump.class);
-		
-		String response = weatherResponseHelper.compareWeatherDataFromApi(externalWeatherDataDump1, externalWeatherDataDump2);
+		ExternalWeatherDataDump externalWeatherDataDump2 = getWeatherDataFromApi(secondCity);
+
+		String response = weatherResponseHelper.compareWeatherDataFromApi(
+				externalWeatherDataDump1, externalWeatherDataDump2);
 
 		return response;
 	}
 
+	private boolean isDataCachedAndAlive(String cityName) {
+		return (cachedWeatherData.containsKey(cityName) && isCacheALive(cityName));
+	}
 
+	private boolean isCacheALive(String cityName) {
+		return (System.currentTimeMillis() - cachedWeatherData.get(cityName)
+				.getDt()) < CACHE_EXPIRY;
+	}
 
+	private ExternalWeatherDataDump getWeatherDataFromApi(String cityName)
+			throws ClientProtocolException, IOException {
+		if (isDataCachedAndAlive(cityName)) {
+			return cachedWeatherData.get(cityName);
+		} else {
+			String requestUrl = weatherResponseHelper.buildUrl(cityName);
+			ExternalWeatherDataDump weatherDataResponse = jsonHelper
+					.deSerializeJsonToObject(weatherResponseHelper
+							.getWeatherDataFromApi(requestUrl),
+							ExternalWeatherDataDump.class);
+			cacheWeatherData(cityName, weatherDataResponse);
+			return weatherDataResponse;
+		}
+	}
+
+	private void cacheWeatherData(String cityName,
+			ExternalWeatherDataDump weatherData) {
+		cachedWeatherData.put(cityName, weatherData);
+	}
 }

@@ -29,7 +29,7 @@ public class ExternalWeatherDataDump {
 	private Clouds clouds;
 	
 	@JsonProperty("dt")
-	private int dt;
+	private long dt;
 	
 	@JsonProperty("sys")
 	private Sys sys;
@@ -95,11 +95,11 @@ public class ExternalWeatherDataDump {
 		this.clouds = clouds;
 	}
 
-	public int getDt() {
+	public long getDt() {
 		return dt;
 	}
 
-	public void setDt(int dt) {
+	public void setDt(long dt) {
 		this.dt = dt;
 	}
 

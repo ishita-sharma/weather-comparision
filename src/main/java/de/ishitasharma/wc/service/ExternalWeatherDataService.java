@@ -30,13 +30,13 @@ public class ExternalWeatherDataService implements IExternalWeatherDataService {
 	private Map<String, ExternalWeatherDataDump> cachedWeatherData = new HashMap<String, ExternalWeatherDataDump>();
 
 	@Override
-	public String compare(String firstCity, String secondCity)
+	public String compare(String firstCity, String secondCity, String appId)
 			throws JsonParseException, JsonMappingException,
 			ClientProtocolException, IOException {
 
-		ExternalWeatherDataDump externalWeatherDataDump1 = getWeatherDataFromApi(firstCity);
+		ExternalWeatherDataDump externalWeatherDataDump1 = getWeatherDataFromApi(firstCity, appId);
 
-		ExternalWeatherDataDump externalWeatherDataDump2 = getWeatherDataFromApi(secondCity);
+		ExternalWeatherDataDump externalWeatherDataDump2 = getWeatherDataFromApi(secondCity, appId);
 
 		String response = weatherResponseHelper.compareWeatherDataFromApi(
 				externalWeatherDataDump1, externalWeatherDataDump2);
@@ -53,12 +53,12 @@ public class ExternalWeatherDataService implements IExternalWeatherDataService {
 				.get(cityName).getDt()) < CACHE_EXPIRY;
 	}
 
-	private ExternalWeatherDataDump getWeatherDataFromApi(String cityName)
+	private ExternalWeatherDataDump getWeatherDataFromApi(String cityName, String appId)
 			throws ClientProtocolException, IOException {
 		if (isDataCachedAndAlive(cityName)) {
 			return cachedWeatherData.get(cityName);
 		} else {
-			String requestUrl = weatherResponseHelper.buildUrl(cityName);
+			String requestUrl = weatherResponseHelper.buildUrl(cityName,appId);
 			ExternalWeatherDataDump weatherDataResponse = jsonHelper
 					.deSerializeJsonToObject(weatherResponseHelper
 							.getWeatherDataFromApi(requestUrl),

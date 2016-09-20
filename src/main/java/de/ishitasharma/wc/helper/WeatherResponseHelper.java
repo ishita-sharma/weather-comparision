@@ -18,16 +18,15 @@ public class WeatherResponseHelper {
 
 	private static final String REQUEST_URL = "http://api.openweathermap.org/data/2.5/weather?q=";
 	private static final String APP_ID_PARAM = "&appid=";
-	private static final String APP_ID = "4bfe910efecbc99e6539b119c6be5770";
 	private static final String UNITS_PARAM = "&units=";
 	private static final String UNITS_VALUE = "metric";
 	private static final String ISWARMER = " is warmer than ";
 	private static final String ISCOOLER = " is cooler than ";
 	private static final String SPACE = " ";
 
-	public String buildUrl(String cityName) {
+	public String buildUrl(String cityName, String appId) {
 		StringBuilder sb = new StringBuilder(REQUEST_URL);
-		return sb.append(cityName).append(APP_ID_PARAM).append(APP_ID)
+		return sb.append(cityName).append(APP_ID_PARAM).append(appId)
 				.append(UNITS_PARAM).append(UNITS_VALUE).toString();
 	}
 

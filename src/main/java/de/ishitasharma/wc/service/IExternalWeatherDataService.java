@@ -7,6 +7,6 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 
 public interface IExternalWeatherDataService {
 
-	public String compare(String firstCity, String secondCity)
+	public String compare(String firstCity, String secondCity, String appId)
 			throws JsonParseException, JsonMappingException, IOException;
 }

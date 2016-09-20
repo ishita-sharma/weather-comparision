@@ -1,26 +1,16 @@
 package de.ishitasharma.wc.service;
 
 import java.io.IOException;
-import java.sql.Time;
-import java.util.Calendar;
-import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.inject.Inject;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.util.EntityUtils;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
 import de.ishitasharma.wc.api.entity.ExternalWeatherDataDump;
@@ -59,8 +49,8 @@ public class ExternalWeatherDataService implements IExternalWeatherDataService {
 	}
 
 	private boolean isCacheALive(String cityName) {
-		return (System.currentTimeMillis() - cachedWeatherData.get(cityName)
-				.getDt()) < CACHE_EXPIRY;
+		return ((new GregorianCalendar().getTime().getTime()) / 1000L - cachedWeatherData
+				.get(cityName).getDt()) < CACHE_EXPIRY;
 	}
 
 	private ExternalWeatherDataDump getWeatherDataFromApi(String cityName)

@@ -1,44 +1,41 @@
 package de.ishitasharma.wc.service;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import de.ishitasharma.wc.entity.ComparisionResult;
+import de.ishitasharma.wc.helper.WeatherResponseHelper;
+import org.apache.http.client.ClientProtocolException;
+import org.springframework.stereotype.Service;
+
+import javax.inject.Inject;
 import java.io.IOException;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.inject.Inject;
 
-import org.apache.http.client.ClientProtocolException;
-import org.springframework.stereotype.Service;
-
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-
-import de.ishitasharma.wc.api.entity.ExternalWeatherDataDump;
-import de.ishitasharma.wc.helper.JsonHelperUtil;
-import de.ishitasharma.wc.helper.WeatherResponseHelper;
 
 @Service
 public class ExternalWeatherDataService implements IExternalWeatherDataService {
 
 	private static final long CACHE_EXPIRY = 9000000;
 
-	private JsonHelperUtil<ExternalWeatherDataDump> jsonHelper = new JsonHelperUtil<ExternalWeatherDataDump>();
-
 	@Inject
 	private WeatherResponseHelper weatherResponseHelper;
 
-	private Map<String, ExternalWeatherDataDump> cachedWeatherData = new HashMap<String, ExternalWeatherDataDump>();
+	private Map<String, JsonNode> cachedWeatherData = new HashMap<String, JsonNode>();
 
 	@Override
-	public String compare(String firstCity, String secondCity, String appId)
+	public ComparisionResult compare(String firstCity, String secondCity, String appId)
 			throws JsonParseException, JsonMappingException,
 			ClientProtocolException, IOException {
 
-		ExternalWeatherDataDump externalWeatherDataDump1 = getWeatherDataFromApi(firstCity, appId);
+		JsonNode externalWeatherDataDump1 = getWeatherDataFromApi(firstCity, appId);
 
-		ExternalWeatherDataDump externalWeatherDataDump2 = getWeatherDataFromApi(secondCity, appId);
+		JsonNode externalWeatherDataDump2 = getWeatherDataFromApi(secondCity, appId);
 
-		String response = weatherResponseHelper.compareWeatherDataFromApi(
+		ComparisionResult response = weatherResponseHelper.compareWeatherDataFromApi(
 				externalWeatherDataDump1, externalWeatherDataDump2);
 
 		return response;
@@ -50,26 +47,25 @@ public class ExternalWeatherDataService implements IExternalWeatherDataService {
 
 	private boolean isCacheALive(String cityName) {
 		return ((new GregorianCalendar().getTime().getTime()) / 1000L - cachedWeatherData
-				.get(cityName).getDt()) < CACHE_EXPIRY;
+				.get(cityName).get("dt").asLong()) < CACHE_EXPIRY;
 	}
 
-	private ExternalWeatherDataDump getWeatherDataFromApi(String cityName, String appId)
+	private JsonNode getWeatherDataFromApi(String cityName, String appId)
 			throws ClientProtocolException, IOException {
-		if (isDataCachedAndAlive(cityName)) {
-			return cachedWeatherData.get(cityName);
-		} else {
+		//if (isDataCachedAndAlive(cityName)) {
+		//	return cachedWeatherData.get(cityName);
+		//} else {
 			String requestUrl = weatherResponseHelper.buildUrl(cityName,appId);
-			ExternalWeatherDataDump weatherDataResponse = jsonHelper
-					.deSerializeJsonToObject(weatherResponseHelper
-							.getWeatherDataFromApi(requestUrl),
-							ExternalWeatherDataDump.class);
-			cacheWeatherData(cityName, weatherDataResponse);
-			return weatherDataResponse;
-		}
+
+			JsonNode node = weatherResponseHelper.getWeatherDataFromApi(requestUrl);
+
+			cacheWeatherData(cityName, node);
+			return node;
+		//}
 	}
 
 	private void cacheWeatherData(String cityName,
-			ExternalWeatherDataDump weatherData) {
+			JsonNode weatherData) {
 		cachedWeatherData.put(cityName, weatherData);
 	}
 }

@@ -1,28 +1,35 @@
 package de.ishitasharma.wc.helper;
 
-import java.io.IOException;
-
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import de.ishitasharma.wc.entity.ComparisionResult;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.util.EntityUtils;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import de.ishitasharma.wc.api.entity.ExternalWeatherDataDump;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class WeatherResponseHelper {
+
+	private static final Logger LOG = LoggerFactory.getLogger(WeatherResponseHelper.class);
 
 	private static final String REQUEST_URL = "http://api.openweathermap.org/data/2.5/weather?q=";
 	private static final String APP_ID_PARAM = "&appid=";
 	private static final String UNITS_PARAM = "&units=";
 	private static final String UNITS_VALUE = "metric";
-	private static final String ISWARMER = " is warmer than ";
-	private static final String ISCOOLER = " is cooler than ";
-	private static final String SPACE = " ";
+	private static final String ISWARMER = "warmer";
+	private static final String ISCOOLER = "cooler";
+	private static final String MORE_HUMID = "more humid";
+	private static final String LESS_HUMID = "less humid";
 
 	public String buildUrl(String cityName, String appId) {
 		StringBuilder sb = new StringBuilder(REQUEST_URL);
@@ -30,51 +37,70 @@ public class WeatherResponseHelper {
 				.append(UNITS_PARAM).append(UNITS_VALUE).toString();
 	}
 
-	public String getWeatherDataFromApi(String request_url)
-			throws ClientProtocolException, IOException {
-		HttpClient httpClient = new DefaultHttpClient();
+	public JsonNode getWeatherDataFromApi(String request_url) {
+
 		HttpGet getRequest = new HttpGet(request_url);
 		getRequest.addHeader("accept", "application/xml");
-		HttpResponse response = httpClient.execute(getRequest);
-		int statusCode = response.getStatusLine().getStatusCode();
-		if (statusCode != 200) {
-			throw new RuntimeException("Failed with HTTP error code : "
-					+ statusCode);
+
+		HttpResponse response = null;
+		JsonNode node = null;
+
+		try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
+
+			response = httpClient.execute(getRequest);
+			HttpEntity entity = response.getEntity();
+
+			int statusCode = response.getStatusLine().getStatusCode();
+			if (statusCode != 200) {
+				throw new RuntimeException("Failed with HTTP error code : " + statusCode);
+			}
+
+			try (InputStream is = entity.getContent()) {
+				ObjectMapper mapper = new ObjectMapper();
+				node = mapper.readTree(is);
+			} catch (IOException e) {
+				LOG.error("Problem reading  from inputstream ", e);
+			}
+		} catch (IOException e) {
+			LOG.error("Problem establishing HTTP connection ", e);
 		}
-		HttpEntity httpEntity = response.getEntity();
-		String apiOutput = EntityUtils.toString(httpEntity);
 
-		httpClient.getConnectionManager().shutdown();
-
-		return apiOutput;
+		return node;
 	}
 
-	public String compareWeatherDataFromApi(
-			ExternalWeatherDataDump externalWeatherDataDump1,
-			ExternalWeatherDataDump externalWeatherDataDump2) {
 
-		double tempFromCity1 = externalWeatherDataDump1.getMain().getTemp();
-		double tempFromCity2 = externalWeatherDataDump2.getMain().getTemp();
+	public ComparisionResult compareWeatherDataFromApi(
+			JsonNode externalWeatherDataDump1,
+			JsonNode externalWeatherDataDump2) {
 
-		String nameOfFirstCity = externalWeatherDataDump1.getName();
-		String nameOfSecondCity = externalWeatherDataDump2.getName();
+		double tempFromCity1 = externalWeatherDataDump1.get("main").get("temp").asDouble();
+		double tempFromCity2 = externalWeatherDataDump2.get("main").get("temp").asDouble();
+		double temp_diff = tempFromCity1-tempFromCity2;
 
-		StringBuilder sb = new StringBuilder(nameOfFirstCity);
+		float humidityFromCity1 = externalWeatherDataDump1.get("main").get("humidity").floatValue();
+		float humidityFromCity2 = externalWeatherDataDump2.get("main").get("humidity").floatValue();
+		float humidity_diff = humidityFromCity1 - humidityFromCity2;
+
+		String nameOfFirstCity = externalWeatherDataDump1.get("name").asText();
+		String nameOfSecondCity = externalWeatherDataDump2.get("name").asText();
+
+		ComparisionResult responseEntity = new ComparisionResult(temp_diff, humidity_diff, nameOfFirstCity,nameOfSecondCity);
+
+		List<String> remarks = new ArrayList<>();
 
 		if (tempFromCity1 > tempFromCity2) {
-			return buildResponse(nameOfSecondCity, sb, ISWARMER, tempFromCity1,
-					tempFromCity2);
+			remarks.add(ISWARMER);
 		} else {
-			return buildResponse(nameOfSecondCity, sb, ISCOOLER, tempFromCity1,
-					tempFromCity2);
+			remarks.add(ISCOOLER);
 		}
-	}
+		if (humidityFromCity1 > humidityFromCity2) {
+			remarks.add(MORE_HUMID);
+		} else {
+			remarks.add(LESS_HUMID);
+		}
 
-	private String buildResponse(String nameOfSecondCity, StringBuilder sb,
-			String comparision, double tempFromCity1, double tempFromCity2) {
-		return sb.append(SPACE).append(tempFromCity1).append(comparision)
-				.append(nameOfSecondCity).append(SPACE).append(tempFromCity2)
-				.toString();
-	}
+		responseEntity.setRemarks(remarks);
 
+		return responseEntity;
+	}
 }

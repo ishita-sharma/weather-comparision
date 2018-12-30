@@ -10,6 +10,9 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -18,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class WeatherResponseHelper {
+public class WeatherResponseHelper implements InitializingBean {
 
 	private static final Logger LOG = LoggerFactory.getLogger(WeatherResponseHelper.class);
 
@@ -31,7 +34,12 @@ public class WeatherResponseHelper {
 	private static final String MORE_HUMID = "more humid";
 	private static final String LESS_HUMID = "less humid";
 
-	public String buildUrl(String cityName, String appId) {
+	@Autowired
+	private Environment environment;
+
+	private String appId;
+
+	public String buildUrl(String cityName) {
 		StringBuilder sb = new StringBuilder(REQUEST_URL);
 		return sb.append(cityName).append(APP_ID_PARAM).append(appId)
 				.append(UNITS_PARAM).append(UNITS_VALUE).toString();
@@ -102,5 +110,10 @@ public class WeatherResponseHelper {
 		responseEntity.setRemarks(remarks);
 
 		return responseEntity;
+	}
+
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		this.appId = environment.getProperty("app_id");
 	}
 }

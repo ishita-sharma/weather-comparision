@@ -25,12 +25,10 @@ public class MainController {
 	@RequestMapping(value = "/compare", method = { RequestMethod.GET }, produces = { "application/json;charset=UTF-8" })
 	public ResponseEntity<String> compare(
 			@RequestParam(value = "firstCity", required = true) String firstCity,
-			@RequestParam(value = "secondCity", required = true) String secondCity,
-			@RequestParam(value = "appid", required = true) String appId)
+			@RequestParam(value = "secondCity", required = true) String secondCity)
 			throws IOException {
 
-		ComparisionResult response = externalWeatherDataService.compare(firstCity,
-				secondCity, appId);
+		ComparisionResult response = externalWeatherDataService.compare(firstCity, secondCity);
 
 		return new ResponseEntity<String>(objectMapper.writeValueAsString(response), HttpStatus.OK);
 	}

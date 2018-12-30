@@ -8,6 +8,6 @@ import de.ishitasharma.wc.entity.ComparisionResult;
 
 public interface IExternalWeatherDataService {
 
-	public ComparisionResult compare(String firstCity, String secondCity, String appId)
+	public ComparisionResult compare(String firstCity, String secondCity)
 			throws JsonParseException, JsonMappingException, IOException;
 }

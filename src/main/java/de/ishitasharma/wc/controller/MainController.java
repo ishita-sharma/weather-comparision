@@ -2,7 +2,7 @@ package de.ishitasharma.wc.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.ishitasharma.wc.entity.ComparisionResult;
-import de.ishitasharma.wc.service.IExternalWeatherDataService;
+import de.ishitasharma.wc.service.ExternalWeatherDataService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -20,7 +20,7 @@ public class MainController {
 	private ObjectMapper objectMapper = new ObjectMapper();
 
 	@Inject
-	private IExternalWeatherDataService externalWeatherDataService;
+	private ExternalWeatherDataService externalWeatherDataService;
 
 	@RequestMapping(value = "/compare", method = { RequestMethod.GET }, produces = { "application/json;charset=UTF-8" })
 	public ResponseEntity<String> compare(
@@ -30,6 +30,6 @@ public class MainController {
 
 		ComparisionResult response = externalWeatherDataService.compare(firstCity, secondCity);
 
-		return new ResponseEntity<String>(objectMapper.writeValueAsString(response), HttpStatus.OK);
+		return new ResponseEntity<>(objectMapper.writeValueAsString(response), HttpStatus.OK);
 	}
 }

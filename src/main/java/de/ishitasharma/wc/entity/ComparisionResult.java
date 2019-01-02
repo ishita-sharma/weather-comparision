@@ -6,16 +6,16 @@ import java.util.List;
 public class ComparisionResult {
 
     private static final String UNIT = "C";
-    private double temp_diff;
-    private float humidity_diff;
+    private double tempDiff;
+    private float humidityDiff;
     private String city1;
     private String city2;
     private List<String> remarks;
 
 
-    public ComparisionResult(double temp_diff, float humidity_diff, String city1, String city2) {
-        this.temp_diff = temp_diff;
-        this.humidity_diff = humidity_diff;
+    public ComparisionResult(double tempDiff, float humidityDiff, String city1, String city2) {
+        this.tempDiff = tempDiff;
+        this.humidityDiff = humidityDiff;
         this.city1 = city1;
         this.city2 = city2;
     }
@@ -24,12 +24,12 @@ public class ComparisionResult {
         return UNIT;
     }
 
-    public double getTemp_diff() {
-        return temp_diff;
+    public double getTempDiff() {
+        return tempDiff;
     }
 
-    public float getHumidity_diff() {
-        return humidity_diff;
+    public float getHumidityDiff() {
+        return humidityDiff;
     }
 
     public String getCity1() {

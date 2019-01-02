@@ -48,7 +48,7 @@ public class WeatherResponseHelperTest {
         ComparisionResult actualComparisionResult = weatherResponseHelper.compareWeatherDataFromApi(nodeCity1, nodeCity2);
 
         Assert.assertEquals("Remark should be as expected", expectedComparisionResult.getRemarks(),actualComparisionResult.getRemarks());
-        Assert.assertTrue("Temperature difference should be as expected", Double.compare(expectedComparisionResult.getTemp_diff(), actualComparisionResult.getTemp_diff())<0.001d);
-        Assert.assertTrue("Humidity difference should be as expected", Double.compare(expectedComparisionResult.getHumidity_diff(), actualComparisionResult.getHumidity_diff())<0.001d);
+        Assert.assertTrue("Temperature difference should be as expected", Double.compare(expectedComparisionResult.getTempDiff(), actualComparisionResult.getTempDiff())<0.001d);
+        Assert.assertTrue("Humidity difference should be as expected", Double.compare(expectedComparisionResult.getHumidityDiff(), actualComparisionResult.getHumidityDiff())<0.001d);
     }
 }

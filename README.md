@@ -1,5 +1,7 @@
 # weather-comparision
 
+[![Build Status](https://travis-ci.org/ishita-sharma/weather-comparision.svg?branch=master)](https://travis-ci.org/ishita-sharma/weather-comparision)
+
 This API compares the temperature of two given cities by getting temperature data from 'open weather' api. 
 The temperatures of the cities are cached and they are refreshed if the data is older than 2.5 hours.
 

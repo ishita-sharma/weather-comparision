@@ -10,3 +10,5 @@ An example request to see comparision of temperature between two cities can be:
   /compare?firstCity=london&secondCity=frankfurt
   
  NOTE: Use your own open weather api appid as enviornment variable -Dapp_id=[app_id]
+
+DEMO: https://lbjq7pyrrl.execute-api.eu-central-1.amazonaws.com/INT/weathercompare?firstCity=jaipur&secondCity=mumbai

@@ -26,7 +26,7 @@ public class WeatherResponseHelper implements InitializingBean {
 	private static final Logger LOG = LoggerFactory.getLogger(WeatherResponseHelper.class);
 
 	private static final String REQUEST_URL = "http://api.openweathermap.org/data/2.5/weather?q=";
-	private static final String APP_ID_PARAM = "&appid=";
+	private static final String APP_ID_PARAM = "&ap	pid=";
 	private static final String UNITS_PARAM = "&units=";
 	private static final String UNITS_VALUE = "metric";
 	private static final String ISWARMER = "warmer";
@@ -39,7 +39,7 @@ public class WeatherResponseHelper implements InitializingBean {
 
 	private String appId;
 
-	public String buildUrl(String cityName) {
+	public String buildUrl(String cityName, String appId) {
 		StringBuilder sb = new StringBuilder(REQUEST_URL);
 		return sb.append(cityName).append(APP_ID_PARAM).append(appId)
 				.append(UNITS_PARAM).append(UNITS_VALUE).toString();

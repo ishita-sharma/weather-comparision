@@ -28,7 +28,7 @@ public class MainController {
 			@RequestParam(value = "secondCity", required = true) String secondCity)
 			throws IOException {
 
-		ComparisionResult response = externalWeatherDataService.compare(firstCity, secondCity);
+		ComparisionResult response = externalWeatherDataService.compare(firstCity, secondCity, "");
 
 		return new ResponseEntity<>(objectMapper.writeValueAsString(response), HttpStatus.OK);
 	}
